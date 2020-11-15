@@ -1,5 +1,6 @@
 package de.fabian.rsa;
 
+import java.math.BigInteger;
 import java.util.Random;
 
 public class RSA {
@@ -11,34 +12,39 @@ public class RSA {
     public RSA() {
         random = new Random();
 
-        p = choosePrime(50);
-        q = choosePrime(50);
+        p = choosePrime(200);
+        q = choosePrime(200);
         n = p*q;
         phi = (p-1)*(q-1);
         e = chooseE(phi);
 
         System.out.println("p = " + p + "; q = " + q + "; n = " + n + "; phi(n) = " + phi + "; e = " + e);
-        System.out.println("public key ("+ e + "," + n + ") \n ");
+        System.out.println("public key ("+ e + "," + n + ")");
 
         d = extendedEuklid(phi, e);
         System.out.println("private key ("+ d + "," + n + ") \n ");
 
     }
 
-    public int encode(int m) {
-        return (int) (Math.pow(m, e)%n);
+    public BigInteger encode(int m) {
+        //return (int) (Math.pow(m, e)%n);
+        return new BigInteger(String.valueOf(m)).modPow(new BigInteger(String.valueOf(e)), new BigInteger(String.valueOf(n)));
     }
 
-    public int decode(int c) {
+    public BigInteger decode(int c) {
+        /*BigInteger i = new BigInteger(String.valueOf((int) Math.pow(c, d)));
         // FIX Fehler in der Berechnung wenn die Zahl zu groß wird
-        return (int) (Math.pow(c, d)%n);
+        return i.mod(new BigInteger(String.valueOf(n)));*/
+        //System.out.println("e*d%n = " + (e*d)%n);
+        //return m.modPow(d,n);
+        return new BigInteger(String.valueOf(c)).modPow(new BigInteger(String.valueOf(d)), new BigInteger(String.valueOf(n)));
     }
 
     private int choosePrime(int pMax) {
         while(true) {
             final int prime = random.nextInt(pMax);
             if(p!=prime && q != prime) {
-                if(isPrime(prime)) {
+                if(prime> 3 && isPrime(prime)) {
                     return prime;
                 }
             }
