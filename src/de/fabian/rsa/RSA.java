@@ -12,8 +12,8 @@ public class RSA {
     public RSA() {
         random = new Random();
 
-        p = choosePrime(200);
-        q = choosePrime(200);
+        p = choosePrime(2000);
+        q = choosePrime(2000);
         n = p*q;
         phi = (p-1)*(q-1);
         e = chooseE(phi);
@@ -24,13 +24,13 @@ public class RSA {
         System.out.println("private key ("+ d + "," + n + ") \n ");
     }
 
-    public BigInteger encode(int m) {
+    public int encode(int m) {
         //return (int) (Math.pow(m, e)%n);
-        return new BigInteger(String.valueOf(m)).modPow(new BigInteger(String.valueOf(e)), new BigInteger(String.valueOf(n)));
+        return new BigInteger(String.valueOf(m)).modPow(new BigInteger(String.valueOf(e)), new BigInteger(String.valueOf(n))).intValue();
     }
 
-    public BigInteger decode(int c) {
-        return new BigInteger(String.valueOf(c)).modPow(new BigInteger(String.valueOf(d)), new BigInteger(String.valueOf(n)));
+    public int decode(int c) {
+        return new BigInteger(String.valueOf(c)).modPow(new BigInteger(String.valueOf(d)), new BigInteger(String.valueOf(n))).intValue();
     }
 
     private int choosePrime(int pMax) {
@@ -79,32 +79,22 @@ public class RSA {
     protected int g, u, v;
 
     private int extendedEuklid(int a, int b) {
-        //System.out.println("\n Erweiter Euklidischer Algorithmus mit a = " + a + " und b = " + b + "\n");
         int q, r, s, t;
         u=t=1;
         v=s=0;
         //System.out.println("u=t = " + u + "; v=s = " + v + ";");
         while(b>0) {
             //System.out.println("--------------------------");
-            q=a/b;
-            //System.out.println("q = " + a + "/" + b + " = " + q);
-            r=a-q*b;
-            //System.out.println("r = " + a + " - " + q + " * " + b + " = " + r);
-            a=b; b=r;
-            //System.out.println("b -> a = " + a + "; r -> b = " + b + "; \n");
+            q=a/b;    //System.out.println("q = " + a + "/" + b + " = " + q);
+            r=a-q*b;  //System.out.println("r = " + a + " - " + q + " * " + b + " = " + r);
+            a=b; b=r; //System.out.println("b -> a = " + a + "; r -> b = " + b + "; \n");
 
-
-            r=u-q*s;
-            //System.out.println("r = " + u + " - " + q + " * " + s + " = " + r);
-            u=s; s=r;
-            //System.out.println("s -> u = " + u + "; r -> s = " + s + ";");
-
-            r=v-q*t;
-            //System.out.println("r = " + v + " - " + q + " * " + t + " = " + r);
-            v=t; t=r;
-            //System.out.println("t -> v = " + v + "; r -> t = " + t + ";");
+            r=u-q*s;  //System.out.println("r = " + u + " - " + q + " * " + s + " = " + r);
+            u=s; s=r; //System.out.println("s -> u = " + u + "; r -> s = " + s + ";");
+            r=v-q*t;  //System.out.println("r = " + v + " - " + q + " * " + t + " = " + r);
+            v=t; t=r; //System.out.println("t -> v = " + v + "; r -> t = " + t + ";");
         }
-        //System.out.println("\n#######################\n");
+        //System.out.println("--------------------------");
         g=a;
         if(v<0) {
             v=v+phi;
